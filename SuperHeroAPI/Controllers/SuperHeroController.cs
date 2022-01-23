@@ -7,21 +7,71 @@ namespace SuperHeroAPI.Controllers
     [ApiController]
     public class SuperHeroController : ControllerBase
     {
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        private static List<SuperHero> heroes = new List<SuperHero>
         {
-            var heroes = new List<SuperHero>
-            {
-                new SuperHero { 
-                    Id = 1, 
-                    Name = "Spider Man", 
-                    FirstName = "Peter", 
-                    LastName = "Parker", 
+             new SuperHero {
+                    Id = 1,
+                    Name = "Spider Man",
+                    FirstName = "Peter",
+                    LastName = "Parker",
                     Place = "NYC"
+                },
+             new SuperHero {
+                    Id = 2,
+                    Name = "Ironman",
+                    FirstName = "Tony",
+                    LastName = "Stark",
+                    Place = "Long Island"
                 }
-            };
+        };
+
+        [HttpGet]
+        public async Task<ActionResult<List<SuperHero>>> Get()
+        {
+            return Ok(heroes);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SuperHero>> Get(int id)
+        {
+            var hero = heroes.Find(h => h.Id == id);
+            if (hero is null)
+                return BadRequest("Hero not found.");
+
+            return Ok(hero);
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<List<SuperHero>>> AddHero(SuperHero hero)
+        {
+            heroes.Add(hero);
+            return Ok(heroes);
+        }
+
+        [HttpPut]
+        public async Task<ActionResult<List<SuperHero>>> UpdateHero(SuperHero request)
+        {
+            var hero = heroes.Find(h => h.Id == request.Id);
+            if (hero is null)
+                return BadRequest("Hero not found.");
+
+            hero.Name = request.Name;
+            hero.FirstName = request.FirstName;
+            hero.LastName = request.LastName;
+            hero.Place = request.Place;
 
             return Ok(heroes);
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<SuperHero>> Delete(int id)
+        {
+            var hero = heroes.Find(h => h.Id == id);
+            if (hero is null)
+                return BadRequest("Hero not found.");
+
+            heroes.Remove(hero);
+            return Ok(hero);
         }
     }
 }
