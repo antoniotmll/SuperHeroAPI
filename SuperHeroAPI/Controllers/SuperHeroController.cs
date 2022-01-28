@@ -10,13 +10,6 @@ namespace SuperHeroAPI.Controllers
         private static List<SuperHero> heroes = new List<SuperHero>
         {
              new SuperHero {
-                    Id = 1,
-                    Name = "Spider Man",
-                    FirstName = "Peter",
-                    LastName = "Parker",
-                    Place = "NYC"
-                },
-             new SuperHero {
                     Id = 2,
                     Name = "Ironman",
                     FirstName = "Tony",
@@ -25,10 +18,17 @@ namespace SuperHeroAPI.Controllers
                 }
         };
 
+        private readonly DataContext _context;
+
+        public SuperHeroController(DataContext context)
+        {
+            _context = context;
+        }
+
         [HttpGet]
         public async Task<ActionResult<List<SuperHero>>> Get()
         {
-            return Ok(heroes);
+            return Ok(await _context.SuperHeroes.ToListAsync());
         }
 
         [HttpGet("{id}")]
