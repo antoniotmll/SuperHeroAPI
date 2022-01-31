@@ -53,14 +53,16 @@ namespace SuperHeroAPI.Controllers
         [HttpPut]
         public async Task<ActionResult<List<SuperHero>>> UpdateHero(SuperHero request)
         {
-            var hero = heroes.Find(h => h.Id == request.Id);
-            if (hero is null)
+            var dbHero = await _context.SuperHeroes.FindAsync(request.Id);
+            if (dbHero is null)
                 return BadRequest("Hero not found.");
 
-            hero.Name = request.Name;
-            hero.FirstName = request.FirstName;
-            hero.LastName = request.LastName;
-            hero.Place = request.Place;
+            dbHero.Name = request.Name;
+            dbHero.FirstName = request.FirstName;
+            dbHero.LastName = request.LastName;
+            dbHero.Place = request.Place;
+
+            await _context.SaveChangesAsync();
 
             return Ok(heroes);
         }
