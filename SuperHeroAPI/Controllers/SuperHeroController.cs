@@ -53,7 +53,7 @@ namespace SuperHeroAPI.Controllers
 
             await _context.SaveChangesAsync();
 
-            return Ok(heroes);
+            return Ok(await _context.SuperHeroes.ToListAsync());
         }
 
         [HttpDelete("{id}")]
